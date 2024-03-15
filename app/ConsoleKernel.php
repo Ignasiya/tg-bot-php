@@ -40,7 +40,7 @@ class ConsoleKernel
 
             if (class_exists($controllerClass)) {
                 $controller = new $controllerClass($this->app);
-                $controller->run($options);
+                $controller->run();
             } else {
                 throw new CommandNotFound('Command "' . $command . '" not exists.');
             }
