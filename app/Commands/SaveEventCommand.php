@@ -14,14 +14,13 @@ class SaveEventCommand extends Command
     protected Application $app;
 
     public function __construct(Application $app)
-
     {
 
         $this->app = $app;
 
     }
-    public function run(array $options  = []): void
 
+    public function run(array $options = []): void
     {
 
         $options = $this->getGetoptOptionValues();
@@ -69,9 +68,7 @@ class SaveEventCommand extends Command
     }
 
     private function getGetoptOptionValues(): array
-
     {
-
         $shortopts = 'c:h:';
 
         $longopts = [
@@ -95,9 +92,7 @@ class SaveEventCommand extends Command
     }
 
     private function isNeedHelp(array $options): bool
-
     {
-
         return !isset($options['name']) ||
 
             !isset($options['text']) ||
@@ -112,10 +107,8 @@ class SaveEventCommand extends Command
 
     }
 
-    private function showHelp()
-
+    private function showHelp(): void
     {
-
         echo " Это тестовый скрипт добавления правил
 
 	Чтобы добавить правило нужно перечислить следующие поля:
@@ -135,25 +128,18 @@ class SaveEventCommand extends Command
     }
 
     private function getCronValues(string $cronString): array
-
     {
-
         $cronValues = explode(" ", $cronString);
 
-        $cronValues = array_map(function ($item) {
+        return array_map(function ($item) {
 
             return $item === "*" ? null : $item;
 
         }, $cronValues);
-
-        return $cronValues;
-
     }
 
     private function saveEvent(array $params): void
-
     {
-
         $event = new Event(new SQLite($this->app));
 
         $event->insert(
@@ -161,9 +147,7 @@ class SaveEventCommand extends Command
             implode(', ', array_keys($params)),
 
             array_values($params)
-
         );
-
     }
 
 }
