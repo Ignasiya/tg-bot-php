@@ -1,7 +1,6 @@
 <?php
 namespace App;
 
-
 use Dotenv\Dotenv;
 
 class Environment

@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Exceptions\CommandNotFound;
+
 class Application
 {
     /** @var string|null */
@@ -12,7 +14,9 @@ class Application
         $this->basePath = $basePath;
     }
 
-
+    /**
+     * @throws CommandNotFound
+     */
     public function run(): void
     {
         if (!$this->env('DEBUG')) {

@@ -1,18 +1,22 @@
 <?php
 
-declare(ticks=1);
-
 namespace App\Commands;
 
 use App\Application;
+use App\Telegram\TelegramApiImp;
 
-class HandleEventsDaemonCommand extends Command
+class TgMessageCommand extends Command
 {
-    protected Application $app;
+    private TelegramApiImp $tgApi;
+    private array $messageHistory = [];
+    private int $messageOffsets;
 
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->tgApi = new TelegramApiImp($this->app->env('TELEGRAM_TOKEN'));
+        $this->messageHistory = [];
+        $this->loadMessageOffsets();
     }
 
     public function run(array $options = []): void
@@ -26,20 +30,26 @@ class HandleEventsDaemonCommand extends Command
     {
         $lastData = $this->getLastData();
 
-        $handleEventsCommand = new HandleEventsCommand($this->app);
-
         while (true) {
             if ($lastData === $this->getCurrentTime()) {
                 sleep(10);
-
                 continue;
             }
 
-            $handleEventsCommand->run($options);
+            $messages = $this->tgApi->getMessage();
 
             $lastData = $this->getCurrentTime();
-
             sleep(10);
         }
+    }
+
+    private function saveMessage($message): void
+    {
+        $this->messageHistory[] = $message;
+    }
+
+    private function loadMessageOffsets()
+    {
+
     }
 }
