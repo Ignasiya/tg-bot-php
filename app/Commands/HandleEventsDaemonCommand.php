@@ -22,7 +22,7 @@ class HandleEventsDaemonCommand extends Command
         $this->daemonRun($options);
     }
 
-    private function daemonRun(array $options)
+    public function daemonRun(array $options)
     {
         $lastData = $this->getLastData();
 
