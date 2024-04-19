@@ -32,4 +32,30 @@ class TgMessageCommandTest extends TestCase
 
         $command->run();
     }
+
+    public function testRunCallIncorrectMessage(): void
+    {
+        $appMock = $this->getMockBuilder(Application::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $tgMock = $this->getMockBuilder(TelegramApiImp::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $tgMock->expects($this->once())
+            ->method('getMessage')
+            ->with(0)
+            ->willReturn([
+                'offset' => 0,
+                'result' => [1, null],
+            ]);
+
+        $command = new TgMessageCommand($appMock);
+        $command->setTelegramApi($tgMock);
+
+        $this->expectOutputString('{"offset":0,"result":[1,null]}');
+
+        $command->run();
+    }
 }
