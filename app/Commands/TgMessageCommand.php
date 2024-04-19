@@ -7,49 +7,24 @@ use App\Telegram\TelegramApiImp;
 
 class TgMessageCommand extends Command
 {
-    private TelegramApiImp $tgApi;
-    private array $messageHistory = [];
-    private int $messageOffsets;
+    protected Application $app;
+    protected TelegramApiImp $telegramApi;
 
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->tgApi = new TelegramApiImp($this->app->env('TELEGRAM_TOKEN'));
-        $this->messageHistory = [];
-        $this->loadMessageOffsets();
     }
 
-    public function run(array $options = []): void
+    public function setTelegramApi(TelegramApiImp $telegramApi): void
     {
-        $this->initPcntl();
-
-        $this->daemonRun($options);
+        $this->telegramApi = $telegramApi;
     }
 
-    private function daemonRun(array $options)
+    function run(array $options = []): void
     {
-        $lastData = $this->getLastData();
-
-        while (true) {
-            if ($lastData === $this->getCurrentTime()) {
-                sleep(10);
-                continue;
-            }
-
-            $messages = $this->tgApi->getMessage();
-
-            $lastData = $this->getCurrentTime();
-            sleep(10);
+        if (!isset($this->telegramApi)) {
+            $this->telegramApi = new TelegramApiImp($this->app->env('TELEGRAM_TOKEN'));
         }
-    }
-
-    private function saveMessage($message): void
-    {
-        $this->messageHistory[] = $message;
-    }
-
-    private function loadMessageOffsets()
-    {
-
+        echo json_encode($this->telegramApi->getMessage(0));
     }
 }
