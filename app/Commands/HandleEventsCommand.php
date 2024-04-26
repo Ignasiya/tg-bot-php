@@ -1,45 +1,35 @@
 <?php
 
 namespace App\Commands;
-
 use App\Application;
-
 use App\Database\SQLite;
-
 use App\EventSender\EventSender;
-
 use App\Models\Event;
+use App\Queue\RabbitMQ;
 use App\Telegram\TelegramApiImp;
 
-//use App\Models\EventDto;
-
 class HandleEventsCommand extends Command
-
 {
-
     protected Application $app;
 
     public function __construct(Application $app)
-
     {
-
         $this->app = $app;
-
     }
 
     public function run(array $options = []): void
-
     {
-
         $event = new Event(new SQLite($this->app));
 
         $events = $event->select();
 
-        $eventSender = new EventSender(new TelegramApiImp($this->app->env('TELEGRAM_TOKEN')));
-        //die(var_dump(999));
+        $queue = new RabbitMQ('eventSender');
+
+        $eventSender = new EventSender(new TelegramApiImp($this->app->env('TELEGRAM_TOKEN')), $queue);
+
         foreach ($events as $event) {
 
-            if ($this->shouldEventBeRan($event)) {
+            if (true) {
 
                 $eventSender->sendMessage($event['receiver_id'], $event['text']);
 

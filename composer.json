@@ -8,6 +8,7 @@
     "ext-pcntl": "*",
     "ext-pdo": "*",
     "ext-pdo_sqlite": "*",
+    "php-amqplib/php-amqplib": "^3.6",
     "predis/predis": "^2.2",
     "psr/simple-cache": "^3.0",
     "vlucas/phpdotenv": "^5.5"
